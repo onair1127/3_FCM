@@ -1,0 +1,53 @@
+plugins {
+     id 'java'
+     id 'application'
+}
+
+repositories {
+     mavenCentral()
+}
+
+group = 'com.anseong.fcm'
+version = '1.0.0'
+
+java {
+     toolchain {
+          languageVersion = JavaLanguageVersion.of(17)
+     }
+}
+
+dependencies {
+     // Use JUnit test framework.
+     implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.939')
+     implementation 'com.amazonaws:aws-java-sdk-s3'
+     implementation 'com.amazonaws:aws-java-sdk-lambda'
+     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+
+     // 공통 라이브러리
+     testImplementation 'junit:junit:4.12'
+     implementation 'org.slf4j:slf4j-api:2.0.17'
+     implementation 'javax.xml.bind:jaxb-api:2.3.1'
+     implementation 'jakarta.json:jakarta.json-api:2.1.2'
+     implementation 'org.glassfish:jakarta.json:2.0.1:module'
+     implementation 'com.google.firebase:firebase-admin:9.2.0'
+}
+
+jar {
+     // archiveFileName = this.group + '-' + this.version + '.jar'
+     archiveFileName = 'test2.jar'
+     version = version
+
+     duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+     manifest {
+          attributes(
+               "Main-Class": "$mainClassName"
+          )
+     }
+
+     from {
+          configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+     }
+}
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
